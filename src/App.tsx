@@ -23,7 +23,7 @@ function App() {
   const [character, setCharacter] = useState<Character | null>(null);
   const [entry, setEntry] = useState<WordEntry | null>(null);
   const [outcome, setOutcome] = useState<"win" | "giveup">("win");
-  const [stats, setStats] = useState<GameStats>({ questions: 0, guesses: 0, durationMs: 0 });
+  const [stats, setStats] = useState<GameStats>({ questions: 0, guesses: 0, hints: 0, durationMs: 0 });
 
   function startGame(c: Character) {
     setCharacter(c);
@@ -46,7 +46,7 @@ function App() {
   function playAgain() {
     if (character) {
       setEntry(pickWord(character.difficulty));
-      setStats({ questions: 0, guesses: 0, durationMs: 0 });
+      setStats({ questions: 0, guesses: 0, hints: 0, durationMs: 0 });
       setPhase("game");
     }
   }

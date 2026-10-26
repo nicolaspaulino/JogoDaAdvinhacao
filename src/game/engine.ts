@@ -420,3 +420,75 @@ export function checkGuess(guess: string, entry: WordEntry): { correct: boolean;
   if (dist <= threshold) return { correct: true, distance: dist };
   return { correct: false, distance: dist };
 }
+
+/**
+ * Generate a progressive hint about the secret word.
+ * Each call reveals the next trait; order is curated for maximum usefulness.
+ * Returns null when no more hints are available.
+ */
+export function generateHint(entry: WordEntry, hintIndex: number): string | null {
+  const traitOrder: { key: string; label: string; format: (v: string | string[]) => string }[] = [
+    {
+      key: "categoria",
+      label: "É da categoria",
+      format: (v) => fmtList(v, ["fruta", "comida", "bebida"], "comida"),
+    },
+    { key: "animal", label: "", format: (v) => (yesNo(v) ? "É um animal 🐾" : "") },
+    { key: "objeto", label: "", format: (v) => (yesNo(v) ? "É um objeto físico" : "") },
+    { key: "lugar", label: "", format: (v) => (yesNo(v) ? "É um lugar ou local" : "") },
+    { key: "abstrato", label: "", format: (v) => (yesNo(v) ? "É algo abstrato, não é um objeto físico" : "") },
+    { key: "vivo", label: "", format: (v) => (yesNo(v) ? "É algo vivo" : "Não é algo vivo") },
+    { key: "cor", label: "A cor principal é", format: (v) => fmtList(v, [], "") },
+    { key: "redondo", label: "", format: (v) => (yesNo(v) ? "Tem formato arredondado" : "") },
+    { key: "comestivel", label: "", format: (v) => (yesNo(v) ? "É comestível" : "") },
+    { key: "eletronico", label: "", format: (v) => (yesNo(v) ? "É eletrônico" : "") },
+    { key: "natural", label: "", format: (v) => (yesNo(v) ? "Existe na natureza" : "É feito pelo ser humano") },
+    { key: "musica", label: "", format: (v) => (yesNo(v) ? "Está ligado a música" : "") },
+    { key: "arte", label: "", format: (v) => (yesNo(v) ? "Está ligado à arte" : "") },
+    { key: "espaco", label: "", format: (v) => (yesNo(v) ? "Tem a ver com o espaço/cosmos" : "") },
+    { key: "emocao", label: "", format: (v) => (yesNo(v) ? "É um sentimento ou emoção" : "") },
+    { key: "mitologia", label: "", format: (v) => (yesNo(v) ? "Envolve mitologia ou lendas" : "") },
+    { key: "agua", label: "", format: (v) => (yesNo(v) ? "Tem a ver com água" : "") },
+    { key: "fogo", label: "", format: (v) => (yesNo(v) ? "Tem a ver com fogo ou calor" : "") },
+    { key: "ceu", label: "", format: (v) => (yesNo(v) ? "Encontra-se no céu" : "") },
+    { key: "move", label: "", format: (v) => (yesNo(v) ? "Pode se mover" : "") },
+    { key: "metal", label: "", format: (v) => (yesNo(v) ? "É feito de metal" : "") },
+    { key: "madeira", label: "", format: (v) => (yesNo(v) ? "É feito de madeira" : "") },
+  ];
+
+  let collected = 0;
+  for (const trait of traitOrder) {
+    const raw = entry.attrs[trait.key];
+    if (raw === undefined) continue;
+    const text = trait.format(raw);
+    if (!text) continue;
+    if (collected === hintIndex) return text;
+    collected++;
+  }
+
+  // Fallback: reveal first letter
+  if (hintIndex === collected) {
+    return `Começa com a letra "${entry.word[0].toUpperCase()}".`;
+  }
+  if (hintIndex === collected + 1) {
+    return `Tem ${entry.word.length} letras no total.`;
+  }
+  return null;
+}
+
+function yesNo(v: string | string[]): boolean {
+  const arr = Array.isArray(v) ? v : [v];
+  return arr.some((x) => normalize(x) === "sim");
+}
+
+function fmtList(v: string | string[], synonyms: string[], fallback: string): string {
+  const arr = Array.isArray(v) ? v : [v];
+  const first = arr[0];
+  if (!first) return fallback;
+  // pick the first value, capitalize
+  return capitalize(first);
+}
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Send, Sparkles, Flag, HelpCircle } from "lucide-react";
+import { Send, Sparkles, Flag, HelpCircle, Lightbulb } from "lucide-react";
 import type { AnswerType, Character, QuestionLog, WordEntry } from "../game/types";
-import { analyzeQuestion, checkGuess } from "../game/engine";
+import { analyzeQuestion, checkGuess, generateHint } from "../game/engine";
 
 interface GameScreenProps {
   character: Character;
@@ -13,6 +13,7 @@ interface GameScreenProps {
 export interface GameStats {
   questions: number;
   guesses: number;
+  hints: number;
   durationMs: number;
 }
 
@@ -25,6 +26,7 @@ export function GameScreen({ character, entry, onWin, onGiveUp }: GameScreenProp
   const [thinking, setThinking] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState<{ text: string; type: AnswerType } | null>(null);
   const [guesses, setGuesses] = useState(0);
+  const [hintsUsed, setHintsUsed] = useState(0);
   const [hint, setHint] = useState<string | null>(null);
 
   const startTime = useRef(Date.now());
@@ -48,8 +50,26 @@ export function GameScreen({ character, entry, onWin, onGiveUp }: GameScreenProp
     return {
       questions: logs.length,
       guesses,
+      hints: hintsUsed,
       durationMs: Date.now() - startTime.current,
     };
+  }
+
+  function handleHint() {
+    if (thinking) return;
+    const hintText = generateHint(entry, hintsUsed);
+    if (!hintText) return;
+    setThinking(true);
+    setCurrentAnswer(null);
+    const thinkDelay = 700 + Math.random() * 600;
+    window.setTimeout(() => {
+      const intro = pick(character.hints.intro);
+      const full = `${intro} ${hintText}`;
+      setHintsUsed((h) => h + 1);
+      setCurrentAnswer({ text: full, type: "talvez" });
+      setHint(null);
+      setThinking(false);
+    }, thinkDelay);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -124,6 +144,11 @@ export function GameScreen({ character, entry, onWin, onGiveUp }: GameScreenProp
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {hintsUsed > 0 && (
+            <div className="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+              {hintsUsed} {hintsUsed === 1 ? "dica" : "dicas"}
+            </div>
+          )}
           <div className={`px-3 py-1.5 rounded-full text-xs font-semibold ${t.badge}`}>
             {logs.length} {logs.length === 1 ? "pergunta" : "perguntas"}
           </div>
@@ -184,8 +209,8 @@ export function GameScreen({ character, entry, onWin, onGiveUp }: GameScreenProp
       {/* Input */}
       <div className="px-4 sm:px-6 py-4 border-t border-black/5 backdrop-blur-md bg-white/50">
         <div className="max-w-2xl mx-auto">
-          {/* Mode toggle */}
-          <div className="flex items-center gap-1.5 mb-3 justify-center">
+          {/* Mode toggle + hint */}
+          <div className="flex items-center gap-1.5 mb-3 justify-center flex-wrap">
             <button
               onClick={() => setMode("question")}
               className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
@@ -207,6 +232,14 @@ export function GameScreen({ character, entry, onWin, onGiveUp }: GameScreenProp
             >
               <Sparkles className="w-3.5 h-3.5" />
               Arriscar palpite
+            </button>
+            <button
+              onClick={handleHint}
+              disabled={thinking}
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all bg-amber-100 text-amber-700 hover:bg-amber-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Lightbulb className="w-3.5 h-3.5" />
+              Pedir dica
             </button>
           </div>
 

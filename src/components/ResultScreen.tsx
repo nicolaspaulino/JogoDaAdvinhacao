@@ -1,4 +1,4 @@
-import { Trophy, Skull, Clock, MessageCircle, Lightbulb, RotateCcw } from "lucide-react";
+import { Trophy, Skull, Clock, MessageCircle, Lightbulb, Sparkles, RotateCcw } from "lucide-react";
 import type { Character } from "../game/types";
 import type { GameStats } from "./GameScreen";
 
@@ -71,7 +71,7 @@ export function ResultScreen({
 
         {/* Stats */}
         <div
-          className="mt-6 grid grid-cols-3 gap-3 animate-[fadeUp_0.4s_ease-out_both]"
+          className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 animate-[fadeUp_0.4s_ease-out_both]"
           style={{ animationDelay: "400ms" }}
         >
           <StatCard
@@ -80,9 +80,14 @@ export function ResultScreen({
             label="Perguntas"
           />
           <StatCard
-            icon={<Lightbulb className="w-4 h-4" />}
+            icon={<Sparkles className="w-4 h-4" />}
             value={stats.guesses}
             label="Palpites"
+          />
+          <StatCard
+            icon={<Lightbulb className="w-4 h-4" />}
+            value={stats.hints}
+            label="Dicas"
           />
           <StatCard
             icon={<Clock className="w-4 h-4" />}

@@ -45,6 +45,16 @@ export const CHARACTERS: Character[] = [
       "Tudo bem, squeak! Euzinho revelo o segredinho! 🐭",
       "Ah, você desistiu? Sem problemas! Olha o que era:",
     ],
+    hints: {
+      intro: [
+        "Squeak! Tá com dificuldade? Euzinho te ajudo! 🐭",
+        "Tá tudo bem pedir ajuda! Olha a dica do ratinho:",
+      ],
+      reveal: [
+        "Squeak! Aqui vai uma dica pra você: 🐭",
+        "Euzinho sussurra uma dica... presta atenção!",
+      ],
+    },
     theme: {
       bg: "from-amber-50 via-orange-50 to-yellow-50",
       bgGradient: "radial-gradient(ellipse at top, #fef3c7 0%, #fffbeb 45%, #fff7ed 100%)",
@@ -112,6 +122,16 @@ export const CHARACTERS: Character[] = [
       "Tudo bem, nem toda caçada é bem-sucedida. Aqui está meu segredo: 🦊",
       "Você rendeu-se? Que pena. A raposa revela, então:",
     ],
+    hints: {
+      intro: [
+        "Hum, atolado? A raposa generosa te dá uma pista... 🦊",
+        "Tudo bem, detetive. Eis uma dica para aguçar o faro:",
+      ],
+      reveal: [
+        "A raposa sussurra uma pista. Preste atenção:",
+        "Que espertinho, pedindo dica... aqui vai:",
+      ],
+    },
     theme: {
       bg: "from-orange-50 via-rose-50 to-amber-50",
       bgGradient: "radial-gradient(ellipse at top, #ffe4e6 0%, #fff7ed 45%, #fff1f2 100%)",
@@ -179,6 +199,16 @@ export const CHARACTERS: Character[] = [
       "Arenda-se, mortal? Compreensível. O abismo revela o que estava oculto: 🐙",
       "Sua mente se curva. Eis o que você jamais alcançaria:",
     ],
+    hints: {
+      intro: [
+        "Mortal implorando por pistas? Que patético... mas o abismo é generoso. 🐙",
+        "Até os deuses antigos concedem favores. Ouça bem:",
+      ],
+      reveal: [
+        "Os antigos sussurram uma verdade parcial... receba-a:",
+        "O abismo cede uma faísca de conhecimento. Use-a:",
+      ],
+    },
     theme: {
       bg: "from-slate-900 via-purple-950 to-slate-900",
       bgGradient:

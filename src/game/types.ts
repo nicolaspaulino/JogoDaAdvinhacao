@@ -21,6 +21,7 @@ export interface Character {
   victory: string[];
   defeat: string[];
   giveUp: string[];
+  hints: { intro: string[]; reveal: string[] };
   theme: CharacterTheme;
 }
 
